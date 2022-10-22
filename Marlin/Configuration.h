@@ -625,7 +625,7 @@
 #define HEATER_3_MAXTEMP 260
 #define HEATER_4_MAXTEMP 260
 #define HEATER_5_MAXTEMP 260
-#define BED_MAXTEMP       81
+#define BED_MAXTEMP       100
 #define CHAMBER_MAXTEMP  60
 
 /**
@@ -1984,7 +1984,7 @@
 
   //#define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
 
-  #define MESH_INSET 20              // Set Mesh bounds as an inset region of the bed
+  #define MESH_INSET 40              // Set Mesh bounds as an inset region of the bed
   #define GRID_MAX_POINTS_X 5      // Don't use more than 15 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
