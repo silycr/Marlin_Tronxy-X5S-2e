@@ -451,11 +451,11 @@
 #if ENABLED(AUTOTEMP)
   #define AUTOTEMP_OLDWEIGHT    0.98  // Factor used to weight previous readings (0.0 < value < 1.0)
   // Turn on AUTOTEMP on M104/M109 by default using proportions set here
-  //#define AUTOTEMP_PROPORTIONAL
+  #define AUTOTEMP_PROPORTIONAL
   #if ENABLED(AUTOTEMP_PROPORTIONAL)
-    #define AUTOTEMP_MIN_P      0 // (°C) Added to the target temperature
+    #define AUTOTEMP_MIN_P      -5 // (°C) Added to the target temperature
     #define AUTOTEMP_MAX_P      5 // (°C) Added to the target temperature
-    #define AUTOTEMP_FACTOR_P   1 // Apply this F parameter by default (overridden by M104/M109 F)
+    #define AUTOTEMP_FACTOR_P   0.1 // Apply this F parameter by default (overridden by M104/M109 F)
   #endif
 #endif
 
@@ -511,10 +511,10 @@
  * Hotend Idle Timeout
  * Prevent filament in the nozzle from charring and causing a critical jam.
  */
-//#define HOTEND_IDLE_TIMEOUT
+#define HOTEND_IDLE_TIMEOUT
 #if ENABLED(HOTEND_IDLE_TIMEOUT)
   #define HOTEND_IDLE_TIMEOUT_SEC (5*60)    // (seconds) Time without extruder movement to trigger protection
-  #define HOTEND_IDLE_MIN_TRIGGER   180     // (°C) Minimum temperature to enable hotend protection
+  #define HOTEND_IDLE_MIN_TRIGGER   160     // (°C) Minimum temperature to enable hotend protection
   #define HOTEND_IDLE_NOZZLE_TARGET   0     // (°C) Safe temperature for the nozzle after timeout
   #define HOTEND_IDLE_BED_TARGET      0     // (°C) Safe temperature for the bed after timeout
 #endif
@@ -608,7 +608,7 @@
  */
 #define FAST_PWM_FAN    // Increase the fan PWM frequency. Removes the PWM noise but increases heating in the FET/Arduino
 #if ENABLED(FAST_PWM_FAN)
-  #define FAST_PWM_FAN_FREQUENCY 31400  // Define here to override the defaults below
+  #define FAST_PWM_FAN_FREQUENCY 30000  // Define here to override the defaults below. ~20HZ>>20KHz human hearing
   //#define USE_OCR2A_AS_TOP
   #ifndef FAST_PWM_FAN_FREQUENCY
     #ifdef __AVR__
@@ -650,7 +650,7 @@
 //#define COOLER_AUTO_FAN_PIN -1
 
 #define EXTRUDER_AUTO_FAN_TEMPERATURE 50
-#define EXTRUDER_AUTO_FAN_SPEED 191   // 255 == full speed
+#define EXTRUDER_AUTO_FAN_SPEED 128   // 255 == full speed
 //#define CHAMBER_AUTO_FAN_TEMPERATURE 30
 //#define CHAMBER_AUTO_FAN_SPEED 255
 //#define COOLER_AUTO_FAN_TEMPERATURE 18
@@ -882,7 +882,7 @@
 //#define HOMING_BACKOFF_POST_MM { 2, 2, 2 }  // (linear=mm, rotational=°) Backoff from endstops after homing
 //#define XY_COUNTERPART_BACKOFF_MM 0         // (mm) Backoff X after homing Y, and vice-versa
 
-//#define QUICK_HOME                          // If G28 contains XY do a diagonal move first
+#define QUICK_HOME                          // If G28 contains XY do a diagonal move first
 //#define HOME_Y_BEFORE_X                     // If G28 contains XY home Y before X
 //#define HOME_Z_FIRST                        // Home Z first. Requires a Z-MIN endstop (not a probe).
 //#define CODEPENDENT_XY_HOMING               // If X/Y can't home without homing Y/X first
@@ -1132,10 +1132,10 @@
 #define DEFAULT_MINSEGMENTTIME        20000   // (µs) Set with M205 B.
 
 // Slow down the machine if the lookahead buffer is (by default) half full.
-// Increase the slowdown divisor for larger buffer sizes.
+// Increase the slowdown divisor for larger buffer sizes. //default 2 [Block_buffer/SLOWDOWN_DIVISOR - 1]
 #define SLOWDOWN
 #if ENABLED(SLOWDOWN)
-  #define SLOWDOWN_DIVISOR 2
+  #define SLOWDOWN_DIVISOR 4
 #endif
 
 /**
@@ -1340,7 +1340,7 @@
 // @section lcd
 
 #if HAS_MANUAL_MOVE_MENU
-  #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 2*60 } // (mm/min) Feedrates for manual moves along X, Y, Z, E from panel
+  #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 20*60 } // (mm/min) Feedrates for manual moves along X, Y, Z, E from panel
   #define FINE_MANUAL_MOVE 0.025    // (mm) Smallest manual move (< 0.1mm) applying to Z on most machines
   #if IS_ULTIPANEL
     #define MANUAL_E_MOVES_RELATIVE // Display extruder move distance rather than "position"
@@ -1434,10 +1434,10 @@
   #endif
 
   // Scroll a longer status message into view
-  #define STATUS_MESSAGE_SCROLLING
+  //#define STATUS_MESSAGE_SCROLLING
 
   // Apply a timeout to low-priority status messages
-  //#define STATUS_MESSAGE_TIMEOUT_SEC 30 // (seconds)
+  #define STATUS_MESSAGE_TIMEOUT_SEC 30 // (seconds)
 
   // On the Info Screen, display XY with one decimal place when possible
   //#define LCD_DECIMAL_SMALL_XY
@@ -1474,10 +1474,10 @@
 #endif // HAS_DISPLAY || DWIN_LCD_PROUI
 
 // Add the G-code 'M73' to set / report the current job progress
-//#define SET_PROGRESS_MANUALLY
+#define SET_PROGRESS_MANUALLY
 #if ENABLED(SET_PROGRESS_MANUALLY)
   //#define SET_PROGRESS_PERCENT          // Add 'P' parameter to set percentage done, otherwise use Marlin's estimate
-  //#define SET_REMAINING_TIME            // Add 'R' parameter to set remaining time, otherwise use Marlin's estimate
+  #define SET_REMAINING_TIME            // Add 'R' parameter to set remaining time, otherwise use Marlin's estimate
   //#define SET_INTERACTION_TIME          // Add 'C' parameter to set time until next filament change or other user interaction
   #if ENABLED(SET_INTERACTION_TIME)
     #define SHOW_INTERACTION_TIME         // Display time until next user interaction ('C' = filament change)
@@ -1558,7 +1558,7 @@
    * an option on the LCD screen to continue the print from the last-known
    * point in the file.
    */
-  #define POWER_LOSS_RECOVERY
+  //#define POWER_LOSS_RECOVERY
   #if ENABLED(POWER_LOSS_RECOVERY)
     #define PLR_ENABLED_DEFAULT   true // Power Loss Recovery enabled by default. (Set with 'M413 Sn' & M500)
     //#define BACKUP_POWER_SUPPLY       // Backup power / UPS to move the steppers on power loss
@@ -1625,7 +1625,7 @@
 
   #define LONG_FILENAME_HOST_SUPPORT      // Get the long filename of a file/folder with 'M33 <dosname>' and list long filenames with 'M20 L'
   #define LONG_FILENAME_WRITE_SUPPORT     // Create / delete files with long filenames via M28, M30, and Binary Transfer Protocol
-  #define M20_TIMESTAMP_SUPPORT           // Include timestamps by adding the 'T' flag to M20 commands
+  //#define M20_TIMESTAMP_SUPPORT           // Include timestamps by adding the 'T' flag to M20 commands
 
   #define SCROLL_LONG_FILENAMES           // Scroll long filenames in the SD card menu
 
@@ -1709,8 +1709,7 @@
    * Use 'M503 C' to write the settings out to the SD Card as 'mc.zip'.
    * See docs/ConfigEmbedding.md for details on how to use 'mc-apply.py'.
    */
-  //#define CONFIGURATION_EMBEDDING
-
+  #define CONFIGURATION_EMBEDDING
   // Add an optimized binary file transfer mode, initiated with 'M28 B1'
   //#define BINARY_FILE_TRANSFER
 
@@ -2404,7 +2403,7 @@ Input flow = RX_Buffer >> Command Buffer >> Planner Buffer;
 // The ASCII buffer for serial input
 //DOCS//The ASCII buffer for serial input. Individual command line length is set by MAX_CMD_SIZE, and should be long enough to hold a complete G-code line. Set the number of lines with BUFSIZE.
 #define MAX_CMD_SIZE 96 //Default 96; //LH// Do not reduce. 64 too small
-#define BUFSIZE 50  //Default 4 //LH// does not need to be ^2. Command_Buffer
+#define BUFSIZE 32  //Default 4 //LH// does not need to be ^2. Command_Buffer
 
 // Transmission to Host Buffer Size
 // To save 386 bytes of flash (and TX_BUFFER_SIZE+3 bytes of RAM) set to 0.
@@ -2419,12 +2418,28 @@ Input flow = RX_Buffer >> Command Buffer >> Planner Buffer;
 // Without XON/XOFF flow control (see SERIAL_XON_XOFF below) 32 bytes should be enough.
 // To use flow control, set this buffer size to at least 1024 bytes.
 // :[0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
-#define RX_BUFFER_SIZE 1024 //Default disabled 1024; Min 128 using BufferBuddy
+#define RX_BUFFER_SIZE 1024 //Default disabled 1024; Min 1024 using BufferBuddy as doesn't respect RX buffer limits
 
-#if RX_BUFFER_SIZE >= 1024
+#if RX_BUFFER_SIZE >= 1024 
   // Enable to have the controller send XON/XOFF control characters to
   // the host to signal the RX buffer is becoming full.
   //#define SERIAL_XON_XOFF
+#endif
+
+/**
+ * Line Number Error Handler
+ * 
+ * Add function to delay resend requests for line number 
+ * errors, for Hosts that send N# line number with GCode.
+ * Prevents resend cycles causing stuttering and failure
+ * on systems with latency between Host and Printer.
+ * eg. Octoprint through ESP8266(WIFI) pass-through
+ * 
+*/
+#define RESEND_HANDLER
+#if ENABLED(RESEND_HANDLER)
+  #define RESEND_HANDLER_DROP_GCODE 5   //Number of GCode lines to drop before resend request sent to Host. Octprint>>ESP3D; Min 5
+  //#define RESEND_HANDLER_NOTICE       //Send additional details to host terminal
 #endif
 
 #if ENABLED(SDSUPPORT)
@@ -2452,23 +2467,6 @@ Input flow = RX_Buffer >> Command Buffer >> Planner Buffer;
  * NOTE: Not yet implemented for all platforms.
  */
 #define EMERGENCY_PARSER  //default disabled
-
-/**
- * Line Number Error Handler
- * 
- * Add function to delay resend requests for line number 
- * errors, for Hosts that send N# line number with GCode.
- * Prevents resend cycles causing stuttering and failure
- * on systems with latency between Host and Printer.
- * eg. Octoprint through ESP8266(WIFI) pass-through
- * 
-*/
-#define RESEND_HANDLER
-#if ENABLED(RESEND_HANDLER)
-  #define RESEND_HANDLER_DROP_GCODE 5 //Number of GCode lines to drop before resend request sent to Host. Octprint>>ESP3D; Min 5
-  //#define RESEND_HANDLER_NOTICE //LHLH add notes
-#endif
-
 
 /**
  * Realtime Reporting (requires EMERGENCY_PARSER)
@@ -3844,7 +3842,7 @@ Input flow = RX_Buffer >> Command Buffer >> Planner Buffer;
 
 // Support for MeatPack G-code compression (https://github.com/scottmudge/OctoPrint-MeatPack)
 //#define MEATPACK_ON_SERIAL_PORT_1
-//#define MEATPACK_ON_SERIAL_PORT_2
+#define MEATPACK_ON_SERIAL_PORT_2
 
 //#define GCODE_CASE_INSENSITIVE  // Accept G-code sent to the firmware in lowercase
 
@@ -4415,7 +4413,7 @@ Input flow = RX_Buffer >> Command Buffer >> Planner Buffer;
 /**
  * Software Reset options
  */
-//#define SOFT_RESET_VIA_SERIAL         // 'KILL' and '^X' commands will soft-reset the controller
+#define SOFT_RESET_VIA_SERIAL         // 'KILL' and '^X' commands will soft-reset the controller
 //#define SOFT_RESET_ON_KILL            // Use a digital button to soft-reset the controller after KILL
 
 // Report uncleaned reset reason from register r2 instead of MCUSR. Supported by Optiboot on AVR.
