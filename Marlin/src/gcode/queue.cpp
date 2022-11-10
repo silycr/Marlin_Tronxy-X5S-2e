@@ -285,23 +285,24 @@ void GCodeQueue::flush_and_request_resend(const serial_index_t serial_ind) {
 
 /**
  * Notify host a resend has been skipped, with the offending and expected Line number
+ * Or
+ * send "ok" to keep comms alive
 */
-#if ENABLED(RESEND_HANDLER_NOTICE)
+#if ENABLED(RESEND_HANDLER)
   void GCodeQueue::ln_num_error_notice(const serial_index_t serial_ind, const long host_gcode_N) { //~8ms to send @500000 through ESP8266(ESP3D WIFI)>>Octoprint
-    //Notify Host of issue
     #if HAS_MULTI_SERIAL
       if (!serial_ind.valid()) return;              // Optimization here, skip if the command came from SD or Flash Drive
       PORT_REDIRECT(SERIAL_PORTMASK(serial_ind));   // Reply to the serial port that sent the command
     #endif
-
-    serial_echo_start(); // { serial_print(F("Echo:")); }
-    SERIAL_ECHOLNPGM("Host sent incorrect line : ", host_gcode_N);
-    serial_echo_start(); // { serial_print(F("Echo:")); }
-    SERIAL_ECHOLNPGM("Line expected : ", serial_state[serial_ind.index].last_N + 1);
-    SERIAL_ECHOLNPGM(STR_OK); //send Ok to continue action from Host
+    #if ENABLED(RESEND_HANDLER_NOTICE)  //Notify Host of issue
+      serial_echo_start(); // { serial_print(F("Echo:")); }
+      SERIAL_ECHOLNPGM("Host sent incorrect line : ", host_gcode_N);
+      serial_echo_start(); // { serial_print(F("Echo:")); }
+      SERIAL_ECHOLNPGM("Line expected : ", serial_state[serial_ind.index].last_N + 1);
+    #endif
+    SERIAL_ECHOLNPGM(STR_OK); //Send Ok to continue action from Host
   }
 #endif
-
 
 static bool serial_data_available(serial_index_t index) {
   const int a = SERIAL_IMPL.available(index);
@@ -490,7 +491,7 @@ void GCodeQueue::get_serial_commands() {
             if (n2pos) npos = n2pos;
           }
 
-          const long gcode_N = strtol(npos + 1, nullptr, 10); //Host sent GCode Line#
+          const long gcode_N = strtol(npos + 1, nullptr, 10); //Host sent GCode Line# from RX_buffer
 
           /**
            * Resend Handler - Received line # != expected line number
@@ -509,17 +510,13 @@ void GCodeQueue::get_serial_commands() {
 
               if ((resend_ctrl.ignore_resend_count < resend_ctrl.ignore_resend_max - 1)) {            //Threshold eliminated resends
                 if(serial_state[serial_ind.index].last_N != resend_ctrl.last_error_N){                //Is first error instance
-                  #if ENABLED(RESEND_HANDLER_NOTICE)
-                    ln_num_error_notice(p, gcode_N);
-                  #endif
+                  ln_num_error_notice(p, gcode_N);
                   resend_ctrl.last_error_N = serial_state[serial_ind.index].last_N;         //Set last ignored error line
                   resend_ctrl.ignore_resend_count = 0;                                      //Reset count as first instance                                         
                 }
-                #if ENABLED(RESEND_HANDLER_NOTICE)
-                  else {
-                    ln_num_error_notice(p, gcode_N);
-                  }
-                #endif
+                else {
+                  ln_num_error_notice(p, gcode_N);
+                }
                 resend_ctrl.ignore_resend_count += 1; //Capture anything that doesn't fall in prev if_stmt. Nothing should miss
               }
               else{                                         //Exceeded maximum deleted requests or is a new resend request

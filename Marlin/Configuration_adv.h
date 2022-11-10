@@ -2466,6 +2466,7 @@ Input flow = RX_Buffer >> Command Buffer >> Planner Buffer;
 #define RESEND_HANDLER
 #if ENABLED(RESEND_HANDLER)
   #define RESEND_HANDLER_DROP_GCODE 5 //Number of GCode lines to drop before resend request sent to Host. Octprint>>ESP3D; Min 5
+  //#define RESEND_HANDLER_NOTICE //LHLH add notes
 #endif
 
 
