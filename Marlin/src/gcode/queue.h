@@ -112,9 +112,7 @@ public:
 
     static ResendCtrl resend_ctrl; //resend ctrl variables
 
-    #if ENABLED(RESEND_HANDLER_NOTICE)
-      static void ln_num_error_notice(const serial_index_t serial_ind, const long host_gcode_N);
-    #endif
+    static void ln_num_error_notice(const serial_index_t serial_ind, const long host_gcode_N);
   #endif
 
   /**
