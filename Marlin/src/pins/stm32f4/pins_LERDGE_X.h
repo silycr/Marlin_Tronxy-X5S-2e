@@ -44,7 +44,7 @@
 //
 // Servos
 //
-//#define SERVO0_PIN                        PD13
+#define SERVO0_PIN                        PD13
 
 //
 // Limit Switches
@@ -61,9 +61,9 @@
 //
 // Z Probe (when not Z_MIN_PIN)
 //
-//#ifndef Z_MIN_PROBE_PIN
-//  #define Z_MIN_PROBE_PIN                 PB15
-//#endif
+#ifndef Z_MIN_PROBE_PIN
+  #define Z_MIN_PROBE_PIN                 PB15
+#endif
 
 //
 // Steppers
@@ -98,11 +98,12 @@
 #define HEATER_1_PIN                        -1
 #define HEATER_BED_PIN                      PA2
 
-//#ifndef FAN_PIN
-//  #define FAN_PIN                         PC15
-//#endif
+#ifndef FAN_PIN
+  #define FAN_PIN                           PA0   //PC15
+#endif
+
 #define FAN1_PIN                            PC15
-#define FAN2_PIN                            PA0
+//#define FAN2_PIN                            PA0
 
 #ifndef E0_AUTO_FAN_PIN
   #define E0_AUTO_FAN_PIN                   PC15  // FAN1_PIN
@@ -114,7 +115,7 @@
 //#define CASE_LIGHT_PIN_CI                 -1
 //#define CASE_LIGHT_PIN_DO                 -1
 //#define NEOPIXEL_PIN                      -1
-
+#define CASE_LIGHT_PIN                      PC6
 //
 // SD support (On board)
 //
@@ -133,7 +134,7 @@
 //
 // Misc. Functions
 //
-#define LED_PIN                             PC7   // Alive
+#define LED_PIN                             PC7   // Alive; LHLH LED on Display PCB
 #define PS_ON_PIN                           -1
 #define KILL_PIN                            -1
 
